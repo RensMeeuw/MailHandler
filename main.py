@@ -5,7 +5,8 @@ from aiosmtpd.controller import Controller
 
 class MailHandler:
     def __init__(self, return_message):
-        self.return_message = return_message
+        self._return_message = return_message
+        print(self._return_message)
     
     async def handle_RCPT(self, server, session, envelope, address, rcpt_options):
         envelope.rcpt_tos.append(address)
@@ -19,7 +20,7 @@ class MailHandler:
             print(f'> {ln}'.strip())
         print()
         print('End of message')
-        return self.return_message
+        return self._return_message
 
 def main(return_message):
     controller = Controller(MailHandler(return_message))
@@ -40,7 +41,7 @@ def InterruptableEvent():
     
 if __name__ == '__main__':
     return_message = '250 Message accepted for delivery'
-    if sys.argv[1] is not None:
+    if len(sys.argv) > 0 and not sys.argv[1].startswith('-'):
         return_message = sys.argv[1]
 
     main(return_message)
